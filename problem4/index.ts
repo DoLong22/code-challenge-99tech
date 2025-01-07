@@ -61,3 +61,50 @@ function sum_to_n_c(n: number): number {
     if (n <= 0) return 0;
     return n + sum_to_n_c(n - 1);
 }
+
+function test_sum_to_n(sumFunction: (n: number) => number, functionName: string) {
+    type TestCase = {
+        input: number;
+        expected: number;
+    };
+
+    const testCases: TestCase[] = [
+        { input: 0, expected: 0 }, // Edge Case: Zero input
+        { input: 1, expected: 1 }, // Edge Case: Single value
+        { input: 2, expected: 3 }, // Small value
+        { input: 10, expected: 55 }, // Typical value
+        { input: 100, expected: 5050 }, // Larger value
+        { input: 1000, expected: 500500 }, // Very large value
+        { input: 1000000, expected: (1000000 * (1000000 + 1)) / 2 }, // Extremely large valid input
+        { input: -1, expected: 0 }, // Edge Case: Negative input (assume 0)
+    ];
+
+    console.log(`Running Tests for ${functionName}...`);
+    console.log("============================================");
+
+    testCases.forEach(({ input, expected }, index) => {
+        try {
+            const result = sumFunction(input);
+            const pass = result === expected;
+
+            console.log(`Test Case ${index + 1}: Input = ${input}`);
+            console.log(`  - ${functionName}: ${pass ? '✅ PASS' : '❌ FAIL'} (Result: ${result}, Expected: ${expected})`);
+        } catch (error) {
+            console.error(`Test Case ${index + 1}: Input = ${input}`);
+            console.error(`  - Error: ${error}`);
+        }
+    });
+
+    console.log("============================================");
+    console.log(`Test suite completed for ${functionName}.`);
+}
+
+// Run tests independently
+console.log("\nTesting sum_to_n_a:");
+test_sum_to_n(sum_to_n_a, "sum_to_n_a");
+
+console.log("\nTesting sum_to_n_b:");
+test_sum_to_n(sum_to_n_b, "sum_to_n_b");
+
+console.log("\nTesting sum_to_n_c:");
+test_sum_to_n(sum_to_n_c, "sum_to_n_c");
