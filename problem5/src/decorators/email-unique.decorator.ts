@@ -7,6 +7,7 @@ import {
 } from 'class-validator';
 import { AppDataSource } from '../config/db';
 import { User } from '../services/user/user.entity';
+import { logger } from '../common/logger';
 
 /**
  * Custom validator to check if an email is unique in the User table.
@@ -19,7 +20,7 @@ export class IsEmailUniqueConstraint implements ValidatorConstraintInterface {
             const existingUser = await userRepository.findOne({ where: { email } });
             return !existingUser; // Return false if the email exists, true otherwise
         } catch (error) {
-            console.error('Error in IsEmailUnique validation:', error);
+            logger.error('Error in IsEmailUnique validation:', error);
             return false;
         }
     }

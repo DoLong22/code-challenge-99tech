@@ -5,15 +5,26 @@ import userRouter from './src/services/user';
 import { errorHandler } from './src/utils/middlewares/errorHandler';
 import { NextFunction, Request, Response } from 'express';
 import { setupSwagger } from './src/docs/swagger';
+import { requestIdMiddleware } from './src/utils/middlewares/requestId.middleware';
+import { logger } from './src/common/logger';
+import { RequestContext } from './src/common/RequestContext';
 
 dotenv.config();
 
 const app = express();
 app.use(express.json());
 
+// Initialize AsyncLocalStorage context for requestId
+app.use(requestIdMiddleware);
+app.use((req: Request, res: Response, next: NextFunction) => {
+    const requestId = RequestContext.get('requestId') || 'N/A';
+    logger.info(`${req.method} ${req.url}`);
+    next();
+});
+
 AppDataSource.initialize()
-    .then(() => console.log('Database connected'))
-    .catch(err => console.error('Database connection error:', err));
+    .then(() => logger.info('Database connected'))
+    .catch(err => logger.error('Database connection error:', err));
 
 // Swagger Docs
 setupSwagger(app);
