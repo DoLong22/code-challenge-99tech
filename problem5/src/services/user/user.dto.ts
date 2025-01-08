@@ -1,16 +1,15 @@
-import { IsString, IsEmail, IsBoolean, IsOptional, MinLength } from 'class-validator';
+import { IsString, IsEmail, IsBoolean, IsOptional, MinLength, IsInt, MaxLength, IsIn } from 'class-validator';
 
 export class CreateUserDto {
     @IsString()
-    username: string;
+    @MaxLength(50)
+    fullname: string;
 
-    @IsString()
-    @MinLength(6)
-    password: string;
+    @IsInt()
+    age: number;
 
     @IsEmail()
-    @IsOptional()
-    email?: string;
+    email: string;
 
     @IsBoolean()
     @IsOptional()
@@ -20,12 +19,12 @@ export class CreateUserDto {
 export class UpdateUserDto {
     @IsString()
     @IsOptional()
-    username?: string;
+    @MaxLength(50)
+    fullname?: string;
 
-    @IsString()
-    @MinLength(6)
+    @IsInt()
     @IsOptional()
-    password?: string;
+    age?: number;
 
     @IsEmail()
     @IsOptional()
