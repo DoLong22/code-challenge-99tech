@@ -1,4 +1,5 @@
 import { IsString, IsEmail, IsBoolean, IsOptional, MinLength, IsInt, MaxLength, IsIn } from 'class-validator';
+import { IsEmailUnique } from '../../decorators/email-unique.decorator';
 
 export class CreateUserDto {
     @IsString()
@@ -9,6 +10,7 @@ export class CreateUserDto {
     age: number;
 
     @IsEmail()
+    @IsEmailUnique({ message: 'Email is already registered. Please use a different one.' })
     email: string;
 
     @IsBoolean()
@@ -28,6 +30,7 @@ export class UpdateUserDto {
 
     @IsEmail()
     @IsOptional()
+    @IsEmailUnique({ message: 'Email is already registered. Please use a different one.' })
     email?: string;
 
     @IsBoolean()
