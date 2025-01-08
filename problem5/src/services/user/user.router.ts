@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import { UserController } from './user.controller';
+import { validateRequest } from '../../utils/middlewares/validation.middleware';
+import { CreateUserDto, UpdateUserDto } from './user.dto';
 
 const router = Router();
 const controller = new UserController();
@@ -42,7 +44,7 @@ const controller = new UserController();
  *       400:
  *         description: Validation error
  */
-router.post('/', controller.create.bind(controller));
+router.post('/', validateRequest(CreateUserDto), controller.create.bind(controller));
 
 /**
  * @swagger
@@ -112,7 +114,7 @@ router.get('/:id', controller.findById.bind(controller));
  *       400:
  *         description: Validation error
  */
-router.put('/:id', controller.update.bind(controller));
+router.put('/:id', validateRequest(UpdateUserDto), controller.update.bind(controller));
 
 /**
  * @swagger

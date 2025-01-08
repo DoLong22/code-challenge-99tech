@@ -20,6 +20,10 @@ setupSwagger(app);
 // Routes
 app.use('/api/users', userRouter);
 
+// Error Handler Middleware (MUST be placed after all routes)
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+    errorHandler(err, req, res, next);
+});
 
 app.get('/', (req, res) => {
     res.send('Welcome to User API');

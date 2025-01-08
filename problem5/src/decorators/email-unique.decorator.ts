@@ -14,13 +14,18 @@ import { User } from '../services/user/user.entity';
 @ValidatorConstraint({ async: true })
 export class IsEmailUniqueConstraint implements ValidatorConstraintInterface {
     async validate(email: string, args: ValidationArguments): Promise<boolean> {
-        const userRepository = AppDataSource.getRepository(User);
-        const existingUser = await userRepository.findOne({ where: { email } });
-        return !existingUser; // Return true if no user with this email exists
+        try {
+            const userRepository = AppDataSource.getRepository(User);
+            const existingUser = await userRepository.findOne({ where: { email } });
+            return !existingUser; // Return false if the email exists, true otherwise
+        } catch (error) {
+            console.error('Error in IsEmailUnique validation:', error);
+            return false;
+        }
     }
 
     defaultMessage(args: ValidationArguments): string {
-        return `The email "${args.value}" is already in use. Please use another email.`;
+        return `The email "${args.value}" is already in use.`;
     }
 }
 
