@@ -1,8 +1,9 @@
 import { IsString, IsEmail, IsBoolean, IsOptional, MinLength, IsInt, MaxLength, Min, Max, IsNotEmpty } from 'class-validator';
 import { IsEmailUnique } from '../../decorators/email-unique.decorator';
+import { Transform } from 'class-transformer';
 
 export class CreateUserDto {
-    @IsNotEmpty()	
+    @IsNotEmpty()
     @IsString()
     @MaxLength(50)
     fullname: string;
@@ -12,7 +13,7 @@ export class CreateUserDto {
     @Max(100)
     age: number;
 
-    @IsNotEmpty()	
+    @IsNotEmpty()
     @IsEmail()
     @IsEmailUnique({ message: 'Email is already registered. Please use a different one.' })
     email: string;
@@ -36,10 +37,30 @@ export class UpdateUserDto {
 
     @IsOptional()
     @IsEmail()
-    @IsEmailUnique({ message: 'Email is already registered. Please use a different one.' })
     email?: string;
 
     @IsOptional()
     @IsBoolean()
     isActive?: boolean;
+}
+
+export class PaginationQueryDto {
+    @IsOptional()
+    @IsInt()
+    @Min(1)
+    @Transform(({ value }) => parseInt(value))
+    page?: number = 1;
+
+    @IsOptional()
+    @IsInt()
+    @Min(1)
+    @Max(100)
+    @Transform(({ value }) => parseInt(value))
+    limit?: number = 10;
+}
+
+export class FilterUserDto extends PaginationQueryDto {
+    @IsOptional()
+    @IsString()
+    keyword?: string;
 }

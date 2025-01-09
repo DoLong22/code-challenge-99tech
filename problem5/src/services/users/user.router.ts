@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { UserController } from './user.controller';
 import { validateRequest } from '../../utils/middlewares/validation.middleware';
-import { CreateUserDto, UpdateUserDto } from './user.dto';
+import { CreateUserDto, FilterUserDto, UpdateUserDto } from './user.dto';
 
 const router = Router();
 const controller = new UserController();
@@ -49,27 +49,33 @@ router.post('/', validateRequest(CreateUserDto), controller.create.bind(controll
 
 /**
  * @swagger
+ * components:
+ *   parameters:
+ *     FilterUserParams:
+ *       in: query
+ *       name: filters
+ *       schema:
+ *         $ref: '#/components/schemas/FilterUserDto'
  * /users:
  *   get:
- *     summary: Get all users
+ *     summary: Get all users with optional filters
  *     tags: [Users]
+ *     parameters:
+ *       - $ref: '#/components/parameters/FilterUserParams'
  *     responses:
  *       200:
- *         description: List of users
+ *         description: List of filtered users
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/UserResponseDto'
- *       500:
- *         description: Internal server error
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
+ *               type: object
+ *               properties:
+ *                 items:
+ *                   $ref: '#/components/schemas/UserResponseDto'
+ *                 meta:
+ *                   $ref: '#/components/schemas/PaginationMetaDto'
  */
-router.get('/', controller.findAll.bind(controller));
+router.get('/', validateRequest(FilterUserDto), controller.findAll.bind(controller));
 
 /**
  * @swagger
@@ -116,6 +122,10 @@ router.get('/:id', controller.findById.bind(controller));
  *     responses:
  *       200:
  *         description: User updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserResponseDto'
  *       400:
  *        description: Validation error
  *        content:

@@ -20,7 +20,7 @@ export class UserController {
 
   async findAll(req: Request, res: Response, next: NextFunction) {
     try {
-      const users = await this.service.findAll();
+      const users = await this.service.findAll(req.query);
       res.status(200).json(users);
     } catch (error) {
       next(error);
@@ -41,6 +41,12 @@ export class UserController {
 
   async update(req: Request, res: Response, next: NextFunction) {
     try {
+      if (req.body.email) {
+        const userRepository = await this.service.findByEmail(req.body.email);
+        if (userRepository && userRepository.id !== Number(req.params.id)) {
+          throw new CustomError(400, 'Email already exists', []);
+        }
+      }
       const user = await this.service.update(Number(req.params.id), req.body);
       res.status(200).json(user);
     } catch (error) {
@@ -50,7 +56,7 @@ export class UserController {
 
   async delete(req: Request, res: Response, next: NextFunction) {
     try {
-      await this.service.delete(Number(req.params.id));
+      await this.service.softDelete(Number(req.params.id));
       res.status(200).json({ message: 'User deleted' });
     } catch (error) {
       next(error);

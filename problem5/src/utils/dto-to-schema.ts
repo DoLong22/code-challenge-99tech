@@ -8,8 +8,8 @@ import path from 'path';
  * @returns JSON Schema for the DTO.
  */
 export const dtoToSchema = (dtoClass: any) => {
-    const schemas = validationMetadatasToSchemas();
-    return schemas[dtoClass.name];
+  const schemas = validationMetadatasToSchemas();
+  return schemas[dtoClass.name];
 };
 
 
@@ -28,7 +28,7 @@ export const loadDtoSchemas = (dtoPath: string): Record<string, any> => {
 
     if (file.isDirectory()) {
       Object.assign(schemas, loadDtoSchemas(filePath));
-    } else if (file.isFile() && file.name.endsWith('.dto.ts')) {
+    } else if (file.isFile() && (file.name.endsWith('.dto.ts') || file.name.endsWith('.dto.js'))) {
       const moduleExports = require(filePath);
 
       Object.keys(moduleExports).forEach((exportedName) => {
@@ -36,11 +36,6 @@ export const loadDtoSchemas = (dtoPath: string): Record<string, any> => {
 
         if (typeof exportedValue === 'function' && exportedValue.name.endsWith('Dto')) {
           schemas[exportedValue.name] = dtoToSchema(exportedValue);
-        }
-
-        if (exportedName.endsWith('Schema') && typeof exportedValue === 'object') {
-          const schemaName = exportedName.replace(/Schema$/, ''); // Strip "Schema" from the name
-          schemas[schemaName] = exportedValue;
         }
       });
     }
