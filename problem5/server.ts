@@ -1,7 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import { AppDataSource } from './src/config/db';
-import userRouter from './src/services/user';
 import { errorHandler } from './src/utils/middlewares/errorHandler';
 import { NextFunction, Request, Response } from 'express';
 import { setupSwagger } from './src/docs/swagger';
@@ -25,8 +24,8 @@ app.use((req: Request, res: Response, next: NextFunction) => {
     logger.info(`${req.method} ${req.url}`);
     next();
 });
+
 // Routes
-// app.use('/api/users', userRouter);
 app.use('/api', loadRouters(path.join(__dirname, 'src/services')));
 
 // Error Handler Middleware (MUST be placed after all routes)

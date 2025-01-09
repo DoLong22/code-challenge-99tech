@@ -9,12 +9,11 @@ const loadRouters = (resourcesPath: string) => {
     folders.forEach((folder) => {
         if (folder.isDirectory()) {
             const folderPath = path.join(resourcesPath, folder.name);
-            console.log('folderPath: ', folderPath);
             const routerFiles = fs.readdirSync(folderPath).filter((file) => file.endsWith('.router.ts') || file.endsWith('.router.js'));
             routerFiles.forEach((file) => {
                 const routerPath = path.join(folderPath, file);
                 const router = require(routerPath).default; // Assuming each router exports `default`
-                const routePrefix = `/${folder.name}s`;
+                const routePrefix = `/${folder.name}`;
                 logger.info(`Loading routes from /${folder.name}`);
                 routerMgr.use(routePrefix, router);
             });

@@ -6,7 +6,7 @@ import {
     ValidationArguments,
 } from 'class-validator';
 import { AppDataSource } from '../config/db';
-import { User } from '../services/user/user.entity';
+import { User } from '../services/users/user.entity';
 import { logger } from '../common/logger';
 
 /**
