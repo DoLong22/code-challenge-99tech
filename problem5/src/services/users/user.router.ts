@@ -24,25 +24,26 @@ const controller = new UserController();
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - fullname
- *               - email
- *             properties:
- *               fullname:
- *                 type: string
- *                 maxLength: 50
- *               age:
- *                 type: number
- *                 maxLength: 3
- *               email:
- *                 type: string
- *                 format: email
+ *             $ref: '#/components/schemas/CreateUserDto'
  *     responses:
  *       201:
  *         description: User created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserResponseDto'
  *       400:
  *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.post('/', validateRequest(CreateUserDto), controller.create.bind(controller));
 
@@ -55,6 +56,18 @@ router.post('/', validateRequest(CreateUserDto), controller.create.bind(controll
  *     responses:
  *       200:
  *         description: List of users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/UserResponseDto'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.get('/', controller.findAll.bind(controller));
 
@@ -72,7 +85,11 @@ router.get('/', controller.findAll.bind(controller));
  *           type: integer
  *     responses:
  *       200:
- *         description: User details
+ *         description: User created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserResponseDto'
  *       404:
  *         description: User not found
  */
@@ -95,24 +112,16 @@ router.get('/:id', controller.findById.bind(controller));
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               fullname:
- *                 type: string
- *                 maxLength: 50
- *               age:
- *                 type: number
- *                 maxLength: 3
- *               email:
- *                 type: string
- *                 format: email
- *               isActive:
- *                 type: boolean
+ *             $ref: '#/components/schemas/UpdateUserDto'
  *     responses:
  *       200:
  *         description: User updated successfully
  *       400:
- *         description: Validation error
+ *        description: Validation error
+ *        content:
+ *         application/json:
+ *          schema:
+ *          $ref: '#/components/schemas/Error'
  */
 router.put('/:id', validateRequest(UpdateUserDto), controller.update.bind(controller));
 

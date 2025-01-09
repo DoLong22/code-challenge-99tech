@@ -1,7 +1,11 @@
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import { Express } from 'express';
+import path from 'path';
 import { logger } from '../common/logger';
+import { loadDtoSchemas } from '../utils/dto-to-schema';
+
+const schemas = loadDtoSchemas(path.join(__dirname, '../services'));
 
 const swaggerOptions: swaggerJsdoc.Options = {
     definition: {
@@ -17,6 +21,49 @@ const swaggerOptions: swaggerJsdoc.Options = {
                 description: 'Development server',
             },
         ],
+        components: {
+            schemas: {
+                ...schemas,
+                ErrorDetail: {
+                    type: 'object',
+                    properties: {
+                        field: {
+                            type: 'string',
+                            description: 'The field that caused the error'
+                        },
+                        message: {
+                            type: 'string',
+                            description: 'Error message for this field'
+                        }
+                    }
+                },
+                Error: {
+                    type: 'object',
+                    properties: {
+                        status: {
+                            type: 'string',
+                            example: 'error'
+                        },
+                        code: {
+                            type: 'integer',
+                            format: 'int32'
+                        },
+                        message: {
+                            type: 'string'
+                        },
+                        details: {
+                            type: 'array',
+                            items: {
+                                $ref: '#/components/schemas/ErrorDetail'
+                            }
+                        },
+                        requestId: {
+                            type: 'string'
+                        }
+                    }
+                }
+            },
+        },
     },
     apis: ['./src/services/*/*.ts'], // Path to files containing API annotations
 };
